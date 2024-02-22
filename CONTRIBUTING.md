@@ -88,10 +88,15 @@ Before you begin, make sure you have the following installed:
 
 4. Configure discord and supabase credentials:
 
-   - Copy the [env_example](env_example) to .env
+   - Copy the [.env.example](.env.example) to .env
 
      ```shell
-     cp env_example .env
+     cp .env.example .env
+     ```
+   - Copy the [config.example.json](config.example.json) to .env
+
+     ```shell
+     cp config.example.json config.json
      ```
 
    - Add your credentials to it
@@ -99,7 +104,7 @@ Before you begin, make sure you have the following installed:
 5. Run the project
 
     ```shell
-    npm run
+    npm run build && npm start
     ```
 
 

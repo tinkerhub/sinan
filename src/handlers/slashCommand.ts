@@ -22,10 +22,6 @@ export default (sinan: Sinan) => {
 
     for (const file of files) {
       let slashCommand = require(`../slashCommands/${dir}/${file}`);
-
-      // When using typescript, the default export is not available
-      slashCommand = slashCommand.default;
-
       slashCommands.push({
         name: slashCommand.name,
         description: slashCommand.description,

@@ -1,7 +1,7 @@
 import { Command, Sinan } from "../../types/interfaces";
 import { Message } from "discord.js";
 
-export default {
+export = {
   name: "ping",
   description: "Pong!",
   cooldown: 5000,

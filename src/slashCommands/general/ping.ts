@@ -1,7 +1,7 @@
 import { ApplicationCommandType, CommandInteraction } from "discord.js";
 import { Sinan, SlashCommand } from "../../types/interfaces";
 
-export default {
+export = {
   name: "ping",
   description: "Check the bot's latency.",
   type: ApplicationCommandType.ChatInput,
@@ -11,8 +11,7 @@ export default {
     interaction.reply({
       content: `🏓 Pong! Latency is ${
         Date.now() - interaction.createdTimestamp
-      }ms.\n
-      API Latency is ${Math.round(client.ws.ping)}ms.`,
+      }ms.\nWebsocket Latency is ${Math.round(client.ws.ping)}ms.`,
       ephemeral: true,
     });
   },

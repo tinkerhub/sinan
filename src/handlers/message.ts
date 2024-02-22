@@ -9,7 +9,6 @@ export default (sinan: typeof client) => {
       .filter((file: string) => file.endsWith(".js") || file.endsWith(".ts"));
     for (let file of commands) {
       let cmd = require(`../commands/${dir}/${file}`);
-      cmd = cmd.default;
       if (cmd.name) {
         sinan.commands.set(cmd.name, cmd);
       }

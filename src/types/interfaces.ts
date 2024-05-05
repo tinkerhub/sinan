@@ -1,8 +1,4 @@
-import {
-  ApplicationCommandType,
-  Client,
-  Collection,
-} from "discord.js";
+import { ApplicationCommandType, Client, Collection } from "discord.js";
 
 interface Command {
   name: string;
@@ -24,6 +20,8 @@ interface ConfigType {
   clientID: string;
   teamRoles: string[];
   codeChampsChannel: string;
+  submissionChannel: string;
+  evaluationChannel: string;
 }
 
 interface Sinan extends Client {

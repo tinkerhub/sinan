@@ -11,7 +11,11 @@ export default function processHandler() {
         new EmbedBuilder()
           .setTitle("Process Handler: Unhandled Rejection")
           .setDescription(
-            `**Unhandled Rejection** at: ${promise}\nReason: ${reason}`
+            `**Unhandled Rejection** at: ${JSON.stringify(
+              promise,
+              null,
+              2
+            )}\n${reason}`
           )
           .setColor("#ff0000"),
       ],
@@ -22,7 +26,11 @@ export default function processHandler() {
       embeds: [
         new EmbedBuilder()
           .setTitle("Process Handler: Uncaught Exception")
-          .setDescription(`**Uncaught Exception**\nError: ${error}`)
+          .setDescription(
+            `**Uncaught Exception**\nError: ${error?.message}\n\n${
+              error?.stack ? "```js\n" + error?.stack + "\n```" : ""
+            }`
+          )
           .setColor("#ff0000"),
       ],
     });

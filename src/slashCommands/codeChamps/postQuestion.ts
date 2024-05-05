@@ -7,6 +7,8 @@ import {
   TextInputBuilder,
   ModalActionRowComponentBuilder,
   ApplicationCommandOptionType,
+  EmbedBuilder,
+  BaseInteraction,
 } from "discord.js";
 import { Sinan, SlashCommand } from "../../types/interfaces";
 
@@ -33,32 +35,28 @@ export = {
         ephemeral: true,
       });
     }
-    
+
     const codeChampsModal = new ModalBuilder()
-    .setTitle("💫 CodeChamps </>")
-    .setCustomId("codeChampsModal");
-    
+      .setTitle("💫 CodeChamps </>")
+      .setCustomId("codeChampsModal");
+
     const questionTitle = new TextInputBuilder()
-    .setPlaceholder("Enter the title of the question.")
-    .setCustomId("questionTitle")
-    .setLabel("Title (Short , styled)")
-    .setMaxLength(100)
-    .setStyle(TextInputStyle.Short)
-    .setRequired(true);
+      .setPlaceholder("Enter the title of the question.")
+      .setCustomId("questionTitle")
+      .setLabel("Title (Short , styled)")
+      .setMaxLength(100)
+      .setStyle(TextInputStyle.Short)
+      .setRequired(true);
     const questionBody = new TextInputBuilder()
-    .setPlaceholder("Enter the body of the question.")
-    .setCustomId("questionBody")
-    .setMaxLength(2000)
-    .setLabel("Description (Use markdown syntax)")
-    .setStyle(TextInputStyle.Paragraph)
-    .setRequired(true);
-    
+      .setPlaceholder("Enter the body of the question.")
+      .setCustomId("questionBody")
+      .setMaxLength(2000)
+      .setLabel("Description (Use markdown syntax)")
+      .setStyle(TextInputStyle.Paragraph)
+      .setRequired(true);
+
     const image = interaction.options?.get("image") ?? null;
     const imageUrl = image?.attachment?.url ?? null;
-
-    // return interaction.reply({
-    //   content: `\`\`\`json\n${JSON.stringify(image, null, 2)}\n\`\`\``
-    // });
 
     const titleActionRow =
       new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
@@ -71,23 +69,47 @@ export = {
 
     codeChampsModal.addComponents(titleActionRow, bodyActionRow);
 
-      const questionImage = new TextInputBuilder()
-        .setCustomId("questionImage")
-        .setLabel("Image (Do not modify!!)")
-        .setPlaceholder("Image URL for embed.")
-        .setStyle(TextInputStyle.Short)
-        .setValue(imageUrl ?? "")
-        .setRequired(false);
-
-      const imageActionRow =
-        new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
-          questionImage
-        );
-      codeChampsModal.addComponents(imageActionRow);
-
-      // Sending the modal
+    // Sending the modal
     await interaction.showModal(codeChampsModal);
 
-    // Handling modal event in interactionCreate.ts
+    // Handling modal event here
+    client.on(
+      "interactionCreate",
+      async (modalInteraction: BaseInteraction | any) => {        
+        if (
+          !modalInteraction.isModalSubmit() ||
+          modalInteraction.customId !== "codeChampsModal"
+        )
+          return;
+          const questionTitle = modalInteraction?.fields?.getTextInputValue("questionTitle");
+          const questionBody = modalInteraction?.fields?.getTextInputValue("questionBody");
+
+        const codeChampsEmbed = new EmbedBuilder()
+          .setTitle("Code Champs")
+          .setColor("#2b2d31")
+          .setDescription(`${questionTitle}\n\n${questionBody}`)
+          .setTimestamp()
+          .setImage(imageUrl)
+          .setFooter({
+            text: `Posted by ${modalInteraction?.user?.username}`,
+            iconURL: modalInteraction?.user?.displayAvatarURL?.(),
+          });
+
+        const channelId = client.config.codeChampsChannel;
+        const channel = modalInteraction.guild?.channels.cache.get(
+          channelId
+        ) as any;
+        await channel
+          ?.send({
+            embeds: [codeChampsEmbed],
+          })
+          .then(() => {
+            modalInteraction.reply(`Question posted in <#${channelId}>`);
+          })
+          .catch((_err: any) => {
+            modalInteraction.reply("Unable to post the question!");
+          });
+      }
+    );
   },
 } as SlashCommand;

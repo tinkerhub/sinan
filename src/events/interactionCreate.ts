@@ -173,39 +173,3 @@ sinan.on("interactionCreate", async (interaction: BaseInteraction | any) => {
     }
   }
 });
-
-// Handle Modal Interactions for codechamps
-sinan.on("interactionCreate", async (interaction: BaseInteraction | any) => {
-  if (!interaction.isModalSubmit()) return;
-  if (interaction.customId === "codeChampsModal") {
-    const questionTitle =
-      interaction?.fields?.getTextInputValue("questionTitle");
-    const questionBody = interaction?.fields?.getTextInputValue("questionBody");
-    const questionImage = interaction?.fields?.getTextInputValue("questionImage") || null;
-
-    const codeChampsEmbed = new EmbedBuilder()
-      .setTitle("Code Champs")
-      .setColor("#2b2d31")
-      .setDescription(`${questionTitle}\n\n${questionBody}`)
-      .setTimestamp()
-      .setImage(questionImage)
-      .setFooter({
-        text: `Posted by ${interaction?.user?.username}`,
-        iconURL: interaction?.user?.displayAvatarURL?.(),
-      });
-
-
-    const channelId = sinan.config.codeChampsChannel;
-    const channel = interaction.guild?.channels.cache.get(channelId);
-    await channel
-      ?.send({
-        embeds: [codeChampsEmbed],
-      })
-      .then(() => {
-        interaction.reply(`Question posted in <#${channelId}>`);
-      })
-      .catch((_err: any) => {
-        interaction.reply("Unable to post the question!");
-      });
-  }
-});

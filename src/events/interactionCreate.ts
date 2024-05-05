@@ -6,6 +6,7 @@ import {
   TextChannel,
   WebhookClient,
   PermissionResolvable,
+  AttachmentBuilder,
 } from "discord.js";
 import ms from "ms";
 import sinan from "../index";
@@ -19,6 +20,31 @@ sinan.on("interactionCreate", async (interaction: BaseInteraction | any) => {
       interaction.commandName
     ) as SlashCommand;
     if (!slashCommand) return;
+
+    const { admins, developers, teamRoles } = sinan.config;
+    // Check if developerOnly
+    if (
+      slashCommand.developerOnly &&
+      !developers.includes(interaction.user.id)
+    ) {
+      return interaction.reply({
+        content: `> ***This command is only for developers!***`,
+        ephemeral: true,
+      });
+    }
+
+    // Check if teamOnly
+    if (
+      slashCommand.teamOnly &&
+      !teamRoles.some((role) =>
+        (interaction.member as GuildMember).roles.cache.has(role)
+      )
+    ) {
+      return interaction.reply({
+        content: `> ***This command is only for TinkerHub team members!***`,
+        ephemeral: true,
+      });
+    }
 
     try {
       if (
@@ -145,5 +171,41 @@ sinan.on("interactionCreate", async (interaction: BaseInteraction | any) => {
     } catch (error) {
       console.log(error);
     }
+  }
+});
+
+// Handle Modal Interactions for codechamps
+sinan.on("interactionCreate", async (interaction: BaseInteraction | any) => {
+  if (!interaction.isModalSubmit()) return;
+  if (interaction.customId === "codeChampsModal") {
+    const questionTitle =
+      interaction?.fields?.getTextInputValue("questionTitle");
+    const questionBody = interaction?.fields?.getTextInputValue("questionBody");
+    const questionImage = interaction?.fields?.getTextInputValue("questionImage") || null;
+
+    const codeChampsEmbed = new EmbedBuilder()
+      .setTitle("Code Champs")
+      .setColor("#2b2d31")
+      .setDescription(`${questionTitle}\n\n${questionBody}`)
+      .setTimestamp()
+      .setImage(questionImage)
+      .setFooter({
+        text: `Posted by ${interaction?.user?.username}`,
+        iconURL: interaction?.user?.displayAvatarURL?.(),
+      });
+
+
+    const channelId = sinan.config.codeChampsChannel;
+    const channel = interaction.guild?.channels.cache.get(channelId);
+    await channel
+      ?.send({
+        embeds: [codeChampsEmbed],
+      })
+      .then(() => {
+        interaction.reply(`Question posted in <#${channelId}>`);
+      })
+      .catch((_err: any) => {
+        interaction.reply("Unable to post the question!");
+      });
   }
 });

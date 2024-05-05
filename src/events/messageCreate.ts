@@ -27,6 +27,17 @@ sinan.on(Events.MessageCreate, async (message: Message | any) => {
     return;
   }
 
+  // Check if developerOnly
+  const { admins, developers } = sinan.config;
+
+  if (command.developerOnly && !developers.includes(message.author.id)) {
+    return message.reply({
+      content: `> ***This command is only for developers!***`,
+      ephemeral: true,
+    });
+  }
+  
+  // Check if cooldown
   if (command.cooldown && !sinan.config.admins.includes(message.author.id)) {
     if (cooldown.has(`${command.name}${message.author.id}`)) {
       return message.reply({
@@ -39,6 +50,7 @@ sinan.on(Events.MessageCreate, async (message: Message | any) => {
       });
     }
 
+    // Check if user and bot has required permissions
     if (command.user_perms || command.bot_perms) {
       if (
         !checkPermissions(message, command.user_perms, true) ||

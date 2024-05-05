@@ -1,12 +1,11 @@
+import dotenv from "dotenv"; dotenv.config();
 import { Client, IntentsBitField, Collection } from "discord.js";
-import dotenv from "dotenv";
 import processHandler from "./utils/processHandler";
 import fs from "fs";
 import { Command, Sinan, SlashCommand } from "types/interfaces";
 import getDir from "./utils/getDir";
 
 console.clear();
-dotenv.config();
 
 const client = new Client({
   intents: [
@@ -44,4 +43,4 @@ fs.readdirSync(`./${getDir()}/handlers`).forEach((handler) => {
 
 sinan.login(process.env.TOKEN!);
 
-// processHandler();
+processHandler();

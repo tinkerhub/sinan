@@ -1,5 +1,4 @@
 import {
-  ApplicationCommandOption,
   ApplicationCommandType,
   Client,
   Collection,
@@ -8,6 +7,8 @@ import {
 interface Command {
   name: string;
   description?: string;
+  developerOnly?: boolean;
+  teamOnly?: boolean;
   aliases?: string[];
   usage?: string;
   user_perms?: string[];
@@ -21,6 +22,8 @@ interface ConfigType {
   admins: string[];
   developers: string[];
   clientID: string;
+  teamRoles: string[];
+  codeChampsChannel: string;
 }
 
 interface Sinan extends Client {
@@ -34,10 +37,12 @@ interface Sinan extends Client {
 interface SlashCommand {
   name: string;
   description?: string;
+  developerOnly?: boolean;
+  teamOnly?: boolean;
   cooldown?: number;
   user_perms?: string[];
   bot_perms?: string[];
-  options?: ApplicationCommandOption[];
+  options?: any[];
   type?: ApplicationCommandType;
   run: Function;
 }

@@ -6,6 +6,7 @@ export = {
   description: "Check the bot's latency.",
   type: ApplicationCommandType.ChatInput,
   cooldown: 5000,
+  developerOnly : true,
   options: [],
   run: async (client: Sinan, interaction: CommandInteraction) => {
     interaction.reply({

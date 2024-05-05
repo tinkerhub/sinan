@@ -23,12 +23,7 @@ export default (sinan: Sinan) => {
     for (const file of files) {
       let slashCommand = require(`../slashCommands/${dir}/${file}`);
       slashCommands.push({
-        name: slashCommand.name,
-        description: slashCommand.description,
-        type: slashCommand.type,
-        options: slashCommand.options ? slashCommand.options : [],
-        dir,
-        file,
+        ...slashCommand as SlashCommand,
       });
 
       if (slashCommand.name) {

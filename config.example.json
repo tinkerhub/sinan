@@ -1,6 +1,14 @@
 {
-    "prefix" : "your-bot-prefix",
-    "admins" : [],
-    "developers" : [],
-    "clientID" : "your-bot-id"
-}
+    "prefix": "<prefix>",
+    "admins": [
+      "<admin_id_1>",
+      "<admin_id_2>",
+      "<admin_id_3>",
+      "<admin_id_4>",
+      "<admin_id_5>"
+    ],
+    "developers": ["<developer_id_1>", "<developer_id_2>"],
+    "clientID": "<client_id>",
+    "teamRoles": ["<team_role_id_1>", "<team_role_id_2>"],
+    "codeChampsChannel" : "<code_champs_channel_id>"
+  }
